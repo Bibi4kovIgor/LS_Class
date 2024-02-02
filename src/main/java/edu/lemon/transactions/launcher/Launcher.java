@@ -30,19 +30,21 @@ public class Launcher {
                 johnsBankCards
         );
 
-        PaymentOperation ihorsMaestroCard =
-                PaymentOperation.createClientTransactionByAccountName(ihorBankClient, "Visa");
-        PaymentOperation ihorsMC =
-                PaymentOperation.createClientTransactionByAccountName(ihorBankClient, "Master Card");
+        // Preparing for transaction
+        PreparePayment ihorsMaestroCard =
+                PreparePayment.getPaymentCard(ihorBankClient, "Visa");
+        PreparePayment ihorsMC =
+                PreparePayment.getPaymentCard(ihorBankClient, "Master Card");
 
-        PaymentOperation johnMaestro =
-                PaymentOperation.createClientTransactionByAccountName(johnBankClient, "Maestro");
+        PreparePayment johnMaestro =
+                PreparePayment.getPaymentCard(johnBankClient, "Maestro");
 
+        // Execute transactions
         Transactional transaction1 =
-                new Transaction<PaymentOperation>(ihorsMC, ihorsMaestroCard, new BigDecimal("5000"));
+                new Transaction<PreparePayment>(ihorsMC, ihorsMaestroCard, new BigDecimal("5000"));
         transaction1.execute();
 
-        // It's not required to specify "PaymentOperation" type because it  set up automatically
+        // It's not required to specify "PreparePayment" type because it  set up automatically
         Transactional transaction2 =
                 new Transaction<>(johnMaestro, ihorsMC, new BigDecimal("15000"));
         transaction2.execute();

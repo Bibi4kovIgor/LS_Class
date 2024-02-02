@@ -5,7 +5,7 @@ import edu.lemon.transactions.logger.LoggerState;
 
 import java.math.BigDecimal;
 
-public class Transaction<T extends PaymentOperation & Processable> implements Transactional {
+public class Transaction<T extends PreparePayment & Processable> implements Transactional {
     private static final String TRANSACTION_START_STATE_MESSAGE = "";
     private static final String TRANSACTION_RUNNING = "Transaction running";
     private static final String TRANSACTION_MESSAGE =
@@ -38,12 +38,13 @@ public class Transaction<T extends PaymentOperation & Processable> implements Tr
 
             outputTransactionString();
 
-
             BigDecimal totalSumTo = to.getTotalAmount().add(sum);
             BigDecimal totalSumFrom = from.getTotalAmount().subtract(sum);
 
             to.setTotalAmount(totalSumTo);
             from.setTotalAmount(totalSumFrom);
+
+            transactionState = TransactionState.COMPLETED;
 
             outputTransactionString();
 
@@ -62,5 +63,6 @@ public class Transaction<T extends PaymentOperation & Processable> implements Tr
                 from.getTotalAmount(),
                 to.getProcessingInfo(), to.getTotalAmount());
         LOGGER.log(LoggerState.INFO, transactionStateMessage);
+        LOGGER.log(LoggerState.INFO, transactionState.name());
     }
 }
